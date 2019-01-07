@@ -1,0 +1,44 @@
+{
+    "properties": {
+        "mode": "All",
+        "parameters": {},
+        "displayName": "Audit 3389",
+        "description": "Audit 3389.",
+        "metadata": {
+            "category": "InfoSec Compliance"
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [{
+                        "field": "type",
+                        "equals": "Microsoft.Network/networkSecurityGroups/securityRules"
+                    },
+                    {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/access",
+                        "equals": "Allow"
+                    },
+                    {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/direction",
+                        "equals": "inbound"
+                    },
+                    {
+                        "anyOf": [{
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                                "equals": "3389"
+                            },
+                            {
+                                "not": {
+                                    "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                                    "notEquals": "3389"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "then": {
+                "effect": "audit"
+            }
+        }
+    }
+}

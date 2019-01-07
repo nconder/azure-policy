@@ -1,0 +1,86 @@
+{
+    "properties": {
+        "mode": "All",
+        "parameters": {},
+        "displayName": "Deny 6379, 16379, and 26379 Redis open to the internet.",
+        "description": "Deny Redis Cache 6379, 16379, and 26379 open to the internet.",
+        "metadata": {
+            "category": "InfoSec Compliance"
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [{
+                        "field": "type",
+                        "equals": "Microsoft.Network/networkSecurityGroups/securityRules"
+                    },
+                    {
+                        "allOf": [{
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/access",
+                                "equals": "Allow"
+                            },
+                            {
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/direction",
+                                "equals": "Inbound"
+                            },
+                            {
+                                "anyOf": [{
+                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                                        "equals": "6379"
+                                    },
+                                    {
+                                        "not": {
+                                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                                            "notEquals": "6379"
+                                        }
+                                    },
+                                    {
+                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                                        "equals": "16379"
+                                    },
+                                    {
+                                        "not": {
+                                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                                            "notEquals": "16379"
+                                        }
+                                    },
+                                    {
+                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                                        "equals": "26379"
+                                    },
+                                    {
+                                        "not": {
+                                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                                            "notEquals": "26379"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "anyOf": [{
+                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                                        "in": [
+                                            "*",
+                                            "Internet"
+                                        ]
+                                    },
+                                    {
+                                        "not": {
+                                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
+                                            "notIn": [
+                                                "*",
+                                                "Internet"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "then": {
+                "effect": "deny"
+            }
+        }
+    }
+}

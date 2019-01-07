@@ -1,8 +1,8 @@
 {
     "properties": {
         "mode": "All",
-        "displayName": "Deny 5432 Postgress open to the internet.",
-        "description": "Deny 5432 Postgress open to the internet.",
+        "displayName": "Deny 22 SSH open to the internet.",
+        "description": "Deny 22 SSH open to the internet.",
         "metadata": {
             "category": "InfoSec Compliance"
         },
@@ -10,12 +10,12 @@
             "blockedPort": {
                 "type": "string",
                 "metadata": {
-                    "displayName": "DeployifNotExist Block Inbound Internet Port 3389 with rule priority 115"
+                    "displayName": "DeployifNotExist Block Inbound Internet Port 22 with rule priority 111"
                 }
             },
             "securityRulePriority": {
                 "type": "string",
-                "defaultValue": "115",
+                "defaultValue": "111",
                 "metadata": {
                     "displayName": "Security Rule Priority"
                 }
@@ -79,7 +79,7 @@
                                     }
                                 },
                                 "resources": [{
-                                    "name": "[concat(parameters('nsgName'),'/denyRdpInternet')]",
+                                    "name": "[concat(parameters('nsgName'),'/denySSHInternet')]",
                                     "type": "Microsoft.Network/networkSecurityGroups/securityRules",
                                     "apiVersion": "2018-03-01",
                                     "properties": {

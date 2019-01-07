@@ -10,12 +10,12 @@
             "blockedPort": {
                 "type": "string",
                 "metadata": {
-                    "displayName": "DeployifNotExist Block Inbound Internet Port 3389 with rule priority 115"
+                    "displayName": "DeployifNotExist Block Inbound Internet Port 5432 with rule priority 116"
                 }
             },
             "securityRulePriority": {
                 "type": "string",
-                "defaultValue": "115",
+                "defaultValue": "116",
                 "metadata": {
                     "displayName": "Security Rule Priority"
                 }
@@ -79,7 +79,7 @@
                                     }
                                 },
                                 "resources": [{
-                                    "name": "[concat(parameters('nsgName'),'/denyRdpInternet')]",
+                                    "name": "[concat(parameters('nsgName'),'/denyPostgressInternet')]",
                                     "type": "Microsoft.Network/networkSecurityGroups/securityRules",
                                     "apiVersion": "2018-03-01",
                                     "properties": {
