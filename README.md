@@ -1,2 +1,2 @@
 # azure-policy
-Azure Policy
+Cusom Azure Policies for basic security.
