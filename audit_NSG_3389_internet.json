@@ -2,8 +2,8 @@
     "properties": {
         "mode": "All",
         "parameters": {},
-        "displayName": "Audit 3389",
-        "description": "Audit 3389.",
+        "displayName": "Audit RDP 3389 allowed from Internet",
+        "description": "Audit RDP 3389 allowed from Internet",
         "metadata": {
             "category": "InfoSec Compliance"
         },
@@ -30,6 +30,25 @@
                                 "not": {
                                     "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
                                     "notEquals": "3389"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "anyOf": [{
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                                "in": [
+                                    "*",
+                                    "Internet"
+                                ]
+                            },
+                            {
+                                "not": {
+                                    "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
+                                    "notIn": [
+                                        "*",
+                                        "Internet"
+                                    ]
                                 }
                             }
                         ]

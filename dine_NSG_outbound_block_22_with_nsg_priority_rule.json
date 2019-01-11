@@ -1,0 +1,114 @@
+{
+    "properties": {
+        "mode": "All",
+        "displayName": "Deny 22 SSH open to the internet Outbound.",
+        "description": "Deny 22 SSH open to the internet Outbound.",
+        "metadata": {
+            "category": "InfoSec Compliance"
+        },
+        "parameters": {
+            "blockedPort": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "DeployifNotExist Block Outbound Internet Port 22 with rule priority 111"
+                }
+            },
+            "securityRulePriority": {
+                "type": "string",
+                "defaultValue": "111",
+                "metadata": {
+                    "displayName": "Security Rule Priority"
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "field": "type",
+                "equals": "Microsoft.Network/networkSecurityGroups"
+            },
+            "then": {
+                "effect": "deployIfNotExists",
+                "details": {
+                    "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                    "existenceCondition": {
+                        "allOf": [{
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/access",
+                                "equals": "Deny"
+                            },
+                            {
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/direction",
+                                "equals": "Outbound"
+                            },
+                            {
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/priority",
+                                "equals": "[parameters('securityRulePriority')]"
+                            },
+                            {
+                                "anyOf": [{
+                                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                                        "equals": "[parameters('blockedPort')]"
+                                    },
+                                    {
+                                        "not": {
+                                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                                            "notEquals": "[parameters('blockedPort')]"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "roleDefinitionIds": [
+                        "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
+                    ],
+                    "deployment": {
+                        "properties": {
+                            "mode": "incremental",
+                            "template": {
+                                "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                                "contentVersion": "1.0.0.0",
+                                "parameters": {
+                                    "nsgName": {
+                                        "type": "string"
+                                    },
+                                    "priority": {
+                                        "type": "string"
+                                    },
+                                    "port": {
+                                        "type": "string"
+                                    }
+                                },
+                                "resources": [{
+                                    "name": "[concat(parameters('nsgName'),'/denySSHInternet')]",
+                                    "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                                    "apiVersion": "2018-03-01",
+                                    "properties": {
+                                        "protocol": "*",
+                                        "sourceAddressPrefix": "Internet",
+                                        "destinationAddressPrefix": "*",
+                                        "sourcePortRange": "*",
+                                        "destinationPortRange": "[parameters('port')]",
+                                        "access": "Deny",
+                                        "direction": "Outbound",
+                                        "priority": "[int(parameters('priority'))]"
+                                    }
+                                }]
+                            },
+                            "parameters": {
+                                "nsgName": {
+                                    "value": "[field('name')]"
+                                },
+                                "priority": {
+                                    "value": "[parameters('securityRulePriority')]"
+                                },
+                                "port": {
+                                    "value": "[parameters('blockedPort')]"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
